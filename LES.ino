@@ -2,6 +2,8 @@
 
 */
 
+//Assigning pins to variables
+
 const int contOne50 = 1;
 const int contOne100 = 2;
 const int contTwo50 = 3;
@@ -19,10 +21,20 @@ const int yellowLED = 14;
 const int redLED = 15;
 const int blueLED = 16;
 
-int contState = 0;
-int spillState;
-//int fillState[] = {0, 0, 0, 0}; 
+//All possible fill states
 
+const int llll[] = {LOW, LOW, LOW, LOW};
+const int hlll[] = {HIGH, LOW, LOW, LOW};
+const int hhll[] = {HIGH, HIGH, LOW, LOW};
+const int llhl[] = {LOW, LOW, HIGH, LOW};
+const int llhh[] = {LOW, LOW, HIGH, HIGH};
+const int hhhl[] = {HIGH, HIGH, HIGH, LOW};
+const int hlhh[] = {HIGH, LOW, HIGH, HIGH};
+const int hhhh[] = {HIGH, HIGH, HIGH, HIGH};
+const int hlhl[] = {HIGH, LOW, HIGH, LOW};
+
+//Function to compare arrays, used to compare level sensor output to possible fillstates
+  
 boolean array_cmp(int *a, int *b){
      int n;
 
@@ -32,6 +44,12 @@ boolean array_cmp(int *a, int *b){
      //ok, if we have not returned yet, they are equal :)
      return true;
 }
+
+void set_latching_valve(){
+
+  
+  
+  }
 
 void setup() {
   // initializing the LEDs and valves as outputs
@@ -59,21 +77,17 @@ void setup() {
   
   Serial.begin(2400);
 
-  delay(5000);
-
   //int spillState = digitalRead(spillSensor);
   int spillState = LOW;
 
   //int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
-  int fillState[] = {LOW, LOW, LOW, LOW};
+  int fillState[] = {HIGH, LOW, HIGH, HIGH};
 
-  int compState[] = {LOW, LOW, LOW, LOW};
- // int fillState[] = {HIGH, LOW, HIGH, HIGH};
- //Check spill sensor
+  //Check spill sensor
  
  if (spillState == HIGH) {
     //Go to ERROR state
-    Serial.println("ERROR");
+    Serial.println("ERROR - LOSS OF CONTAINMENT");
     
   } else {
 
@@ -81,13 +95,14 @@ void setup() {
 
     //Check for containers
     
-    if (digitalRead(contOneSensor) == HIGH && digitalRead(contTwoSensor) == HIGH) {
+    // if (digitalRead(contOneSensor) == HIGH && digitalRead(contTwoSensor) == HIGH) {
+    if (true) {
 
       Serial.println("BOTH CONTAINERS PRESENT");
 
       //Check liquid levels
 
-      if (array_cmp(fillState, compState)) {
+      if (array_cmp(fillState, llll)||array_cmp(fillState, hlhl)) {
 
           //Leave valve in original position
 
@@ -95,42 +110,39 @@ void setup() {
 
           Serial.println("Waiting for initiation...");
         
-        // } else if (fillState == {HIGH, LOW, LOW, LOW} || fillState == {LOW, LOW, HIGH, HIGH} || fillState == {HIGH, LOW, HIGH HIGH}){
+       } else if (array_cmp(fillState, hlll)|| array_cmp(fillState, llhh) || array_cmp(fillState, hlhh)){
           
-        //   //Set valve to container 1
+           //Set valve to container 1
 
-        //   Serial.println("SETTING VALVE TO CONT1");
+           Serial.println("SETTING VALVE TO CONT1");
 
-        //   //Wait for start signal
+           //Wait for start signal
 
-        //   Serial.println("Waiting for initiation...");
+           Serial.println("Waiting for initiation...");
           
-        //  } else if (fillState == {LOW, LOW, HIGH, LOW} || fillState == {HIGH, HIGH, LOW, LOW} || fillState == {HIGH, HIGH, HIGH, LOW} ){
+        } else if (array_cmp(fillState, llhl) || array_cmp(fillState, hhll) || array_cmp(fillState, hhhl)){
 
-        //   //Set valve to container 2
+           //Set valve to container 2
 
-        //   Serial.println("SETTING VALVE TO CONT2");
+           Serial.println("SETTING VALVE TO CONT2");
 
-        //   //Wait for start signal
+           //Wait for start signal
 
-        //   Serial.println("Waiting for initiation...");
+           Serial.println("Waiting for initiation...");
             
-        //    } else if (fillState == {HIGH, HIGH, HIGH, HIGH}) {
+        } else if (array_cmp(fillState, hhhh)) {
 
-        //   //Full state
+           //Full state
 
-        //   Serial.println("BOTH CONTAINERS FULL");
+           Serial.println("BOTH CONTAINERS FULL");
       
-         } else {
+        } else {
 
           //How?
-          Serial.println ("ERROR"); 
+          Serial.println ("ERROR - CHECK LEVEL SENSORS"); 
           
-         }
-      
-
-      
-      
+        }
+        
     } else {
 
       //Go to ERROR state
@@ -144,5 +156,25 @@ void setup() {
 }
 
 void loop() {
+
+  // Wait for start signal
+  
+  while(digitalRead(synthraSignal) == LOW){}
+    
+  // Open both valves and wait 2 min for flow to start
+
+  //Enter loop
+
+    //Check Line Liquid Sensor
+    
+      //if LOW wait 5 min and close valves
+
+      //if HIGH check liquid level sensors 
+
+        //set latching valve position, if full then close valves and end on full message - red solid
+
+        //check spill sensor, if HIGH close valves and end on error - blue light
+
+        //check container sensors, if either is LOW close valves and end on error - red flashing
     
 }
