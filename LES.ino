@@ -96,6 +96,7 @@ void set_latching_valve(){
       Serial.println("BOTH CONTAINERS FULL");
       digitalWrite(valve1, LOW);
       digitalWrite(valve2, LOW);
+      delay(1000);
       exit(0);
 
   } else {
@@ -165,6 +166,7 @@ void setup() {
 
   Serial.println("CONTAINERS IN PLACE");
 
+  set_lights();
   set_latching_valve();
       
 }
@@ -176,6 +178,7 @@ void loop() {
   while(digitalRead(synthraSignal) == LOW){}
     
   // Open both valves and wait 2 min for flow to start
+  Serial.println("Transfer initiated");
   digitalWrite(valve1, HIGH);
   digitalWrite(valve2, HIGH);
   delay(120000);
@@ -189,9 +192,11 @@ void loop() {
   }
   
   // Wait 5 min and close valves
+  Serial.println("Transfer shutdown commencing");
   delay(360000);
   digitalWrite(valve1, LOW);
   digitalWrite(valve2, LOW);
-  Serial.println("Cleaning cycle complete");
+  Serial.println("Transfer complete");
+  delay(1000);
   exit(0);
 }
