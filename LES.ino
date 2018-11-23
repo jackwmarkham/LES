@@ -8,13 +8,14 @@ const int contTwoSensor = 6;
 const int spillSensor = 7;
 const int lineSensor = 8;
 const int synthraSignal = 9;
-const int valve1 = 10;
-const int valve2 = 11;
-const int latchingValve = 12;
-const int greenLED = 13;
-const int yellowLED = 14;
-const int redLED = 15;
-const int blueLED = 16;
+const int valve1 = 52;
+const int valve2 = 50;
+const int latchingValveOne = 48;
+const int latchingValveTwo = 46;
+const int greenLED = 44;
+const int yellowLED = 42;
+const int redLED = 40;
+const int blueLED = 38;
 
 //All possible fill states
 const int llll[] = {LOW, LOW, LOW, LOW};
@@ -28,7 +29,7 @@ const int hhhh[] = {HIGH, HIGH, HIGH, HIGH};
 const int hlhl[] = {HIGH, LOW, HIGH, LOW};
 
 //Function to compare arrays, used to compare level sensor output to possible fillstates
-boolean array_comp(int *a, int *b){
+boolean array_comp(int *a, const int *b){
      int n;
 
      // test each element to be the same. if not, return false
@@ -54,8 +55,8 @@ void light_on(int light){
 }
 
 void set_lights(){
-  //int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
-  int fillState[] = {HIGH, LOW, HIGH, HIGH};
+  int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
+  //int fillState[] = {HIGH, LOW, HIGH, HIGH};
 
   if (array_comp(fillState, llll)||array_comp(fillState, hlhl)) {
 
@@ -73,8 +74,8 @@ void set_lights(){
 }
 
 void set_latching_valve(){
-  //int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
-  int fillState[] = {HIGH, LOW, HIGH, HIGH};
+  int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
+  //int fillState[] = {HIGH, LOW, HIGH, HIGH};
 
   if (array_comp(fillState, llll)||array_comp(fillState, hlhl)) {
 
@@ -84,11 +85,17 @@ void set_latching_valve(){
     
     //Set valve to container 1
     Serial.println("SETTING VALVE TO CONT1");
+    digitalWrite(latchingValveOne, HIGH);
+    delay(1000);
+    digitalWrite(latchingValveOne, LOW);
     
   } else if (array_comp(fillState, llhl) || array_comp(fillState, hhll) || array_comp(fillState, hhhl)){
 
     //Set valve to container 2
     Serial.println("SETTING VALVE TO CONT2");
+    digitalWrite(latchingValveTwo, HIGH);
+    delay(1000);
+    digitalWrite(latchingValveTwo, LOW);
     
   } else if (array_comp(fillState, hhhh)) {
 
@@ -112,8 +119,8 @@ void set_latching_valve(){
 }
 
 void check_spill_sensor(){
-  // if(digitalRead(spillSensor) == HIGH){
-  if(false){
+  if(digitalRead(spillSensor) == HIGH){
+  //if(false){
     Serial.println("ERROR - LOSS OF CONTAINMENT");
     digitalWrite(blueLED, HIGH);
     digitalWrite(valve1, LOW);
@@ -124,8 +131,8 @@ void check_spill_sensor(){
 }
 
 void check_containers(){
-  //if(digitalRead(contOneSensor) == LOW || digitalRead(contTwoSensor) == LOW){
-  if(false){
+  if(digitalRead(contOneSensor) == LOW || digitalRead(contTwoSensor) == LOW){
+  //if(false){
     Serial.println("ERROR - CHECK CONTAINERS");
     digitalWrite(valve1, LOW);
     digitalWrite(valve2, LOW);
@@ -139,7 +146,8 @@ void setup() {
   // initializing the LEDs and valves as outputs
   pinMode(valve1, OUTPUT);
   pinMode(valve2, OUTPUT);
-  pinMode(latchingValve, OUTPUT);
+  pinMode(latchingValveOne, OUTPUT);
+  pinMode(latchingValveTwo, OUTPUT);
   pinMode(greenLED, OUTPUT);
   pinMode(yellowLED, OUTPUT);
   pinMode(redLED, OUTPUT);
@@ -181,19 +189,22 @@ void loop() {
   Serial.println("Transfer initiated");
   digitalWrite(valve1, HIGH);
   digitalWrite(valve2, HIGH);
-  delay(120000);
+  //delay(120000);
+  delay(5000);
 
   while(digitalRead(lineSensor) == HIGH){
     set_lights();
     set_latching_valve();
     check_spill_sensor();
     check_containers();
-    delay(60000);
+    //delay(60000);
+    delay(5000);
   }
   
   // Wait 5 min and close valves
   Serial.println("Transfer shutdown commencing");
-  delay(360000);
+  //delay(360000);
+  delay(5000);
   digitalWrite(valve1, LOW);
   digitalWrite(valve2, LOW);
   Serial.println("Transfer complete");
