@@ -1,5 +1,5 @@
 //Assigning pins to variables
-const int contOne50 = 1;
+const int contOne50 = 22;
 const int contOne100 = 2;
 const int contTwo50 = 3;
 const int contTwo100 = 4;
@@ -122,7 +122,7 @@ void check_spill_sensor(){
   if(digitalRead(spillSensor) == HIGH){
   //if(false){
     Serial.println("ERROR - LOSS OF CONTAINMENT");
-    digitalWrite(blueLED, HIGH);
+    light_on(blueLED);
     digitalWrite(valve1, LOW);
     digitalWrite(valve2, LOW);
     delay(1000);
@@ -143,6 +143,8 @@ void check_containers(){
 }
 
 void setup() {
+
+  delay(5000);
   // initializing the LEDs and valves as outputs
   pinMode(valve1, OUTPUT);
   pinMode(valve2, OUTPUT);
@@ -183,7 +185,7 @@ void loop() {
 
   // Wait for start signal
   Serial.println("Waiting for initation...");
-  while(digitalRead(synthraSignal) == LOW){}
+  while(digitalRead(synthraSignal) != HIGH){}
     
   // Open both valves and wait 2 min for flow to start
   Serial.println("Transfer initiated");
@@ -192,7 +194,7 @@ void loop() {
   //delay(120000);
   delay(5000);
 
-  while(digitalRead(lineSensor) == HIGH){
+  while(digitalRead(lineSensor) != LOW){
     set_lights();
     set_latching_valve();
     check_spill_sensor();
