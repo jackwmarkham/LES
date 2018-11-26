@@ -43,6 +43,9 @@ void flashing(int light){
   digitalWrite(light, HIGH);
   delay(500); // Wait for 1000 millisecond(s)
   digitalWrite(light, LOW);
+  digitalWrite(redLED, LOW);
+  digitalWrite(yellowLED, LOW);
+  digitalWrite(greenLED, LOW);
   delay(500); // Wait for 1000 millisecond(s)
 }
 
@@ -144,7 +147,6 @@ void check_containers(){
 
 void setup() {
 
-  delay(5000);
   // initializing the LEDs and valves as outputs
   pinMode(valve1, OUTPUT);
   pinMode(valve2, OUTPUT);
