@@ -10,8 +10,8 @@ const int lineSensor = 8;
 const int synthraSignal = 9;
 const int valve1 = 52;
 const int valve2 = 50;
-const int latchingValveOne = 48;
-const int latchingValveTwo = 46;
+const int latchingValvePower = 48;
+const int latchingValveSelect = 46;
 const int greenLED = 44;
 const int yellowLED = 42;
 const int redLED = 40;
@@ -76,7 +76,29 @@ void set_lights(){
   }  
 }
 
-void set_latching_valve(){
+void set_latching_valve(int container){
+
+  if (container == 1){
+    digitalWrite(latchingValveSelect, LOW);
+    digitalWrite(latchingValvePower, HIGH);
+    delay(1000);
+    digitalWrite(latchingValvePower, LOW);
+  } else if (container == 2){
+    digitalWrite(latchingValveSelect, HIGH);
+    delay(100);
+    digitalWrite(latchingValvePower, HIGH);
+    delay(1000);
+    digitalWrite(latchingValvePower, LOW);
+    delay(100);
+    digitalWrite(latchingValveSelect, LOW);
+  } else {
+    Serial.println("ERROR WITH LATCHING VALVE SETTING");
+    delay(1000);
+    exit(0);
+  }
+}
+
+void select_container(){
   int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
   //int fillState[] = {HIGH, LOW, HIGH, HIGH};
 
@@ -88,17 +110,13 @@ void set_latching_valve(){
     
     //Set valve to container 1
     Serial.println("SETTING VALVE TO CONT1");
-    digitalWrite(latchingValveOne, HIGH);
-    delay(1000);
-    digitalWrite(latchingValveOne, LOW);
+    set_latching_valve(1);
     
   } else if (array_comp(fillState, llhl) || array_comp(fillState, hhll) || array_comp(fillState, hhhl)){
 
     //Set valve to container 2
     Serial.println("SETTING VALVE TO CONT2");
-    digitalWrite(latchingValveTwo, HIGH);
-    delay(1000);
-    digitalWrite(latchingValveTwo, LOW);
+    set_latching_valve(2);
     
   } else if (array_comp(fillState, hhhh)) {
 
@@ -150,8 +168,8 @@ void setup() {
   // initializing the LEDs and valves as outputs
   pinMode(valve1, OUTPUT);
   pinMode(valve2, OUTPUT);
-  pinMode(latchingValveOne, OUTPUT);
-  pinMode(latchingValveTwo, OUTPUT);
+  pinMode(latchingValvePower, OUTPUT);
+  pinMode(latchingValveSelect, OUTPUT);
   pinMode(greenLED, OUTPUT);
   pinMode(yellowLED, OUTPUT);
   pinMode(redLED, OUTPUT);
@@ -179,7 +197,7 @@ void setup() {
   Serial.println("CONTAINERS IN PLACE");
 
   set_lights();
-  set_latching_valve();
+  select_container();
       
 }
 
@@ -198,7 +216,7 @@ void loop() {
 
   while(digitalRead(lineSensor) != LOW){
     set_lights();
-    set_latching_valve();
+    select_container();
     check_spill_sensor();
     check_containers();
     //delay(60000);
