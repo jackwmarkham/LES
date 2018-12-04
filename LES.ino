@@ -1,4 +1,4 @@
-//Assigning pins to variables
+//Assigning pins to variables, pin 1 left blank to prevent issues with flashing software
 const int contOne50 = 2;
 const int contOne100 = 3;
 const int contTwo50 = 4;
@@ -17,7 +17,7 @@ const int yellowLED = 42;
 const int redLED = 40;
 const int blueLED = 38;
 
-//All possible fill states
+//All possible fill states, follow the format {contOne50, contOne100, contTwo50, contTwo100}
 const int llll[] = {LOW, LOW, LOW, LOW};
 const int hlll[] = {HIGH, LOW, LOW, LOW};
 const int hhll[] = {HIGH, HIGH, LOW, LOW};
@@ -39,16 +39,18 @@ boolean array_comp(int *a, const int *b){
      return true;
 }
 
+//Function to flash a given LED
 void flashing(int light){
   digitalWrite(light, HIGH);
-  delay(500); // Wait for 1000 millisecond(s)
+  delay(500);
   digitalWrite(light, LOW);
   digitalWrite(redLED, LOW);
   digitalWrite(yellowLED, LOW);
   digitalWrite(greenLED, LOW);
-  delay(500); // Wait for 1000 millisecond(s)
+  delay(500); 
 }
 
+//Function to turn a given LED on
 void light_on(int light){
   digitalWrite(greenLED, LOW);
   digitalWrite(yellowLED, LOW);
@@ -57,9 +59,9 @@ void light_on(int light){
   digitalWrite(light, HIGH);
 }
 
+//Function to check sensors and power the correct indicator lights
 void set_lights(){
   int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
-  //int fillState[] = {HIGH, LOW, HIGH, HIGH};
 
   if (array_comp(fillState, llll)||array_comp(fillState, hlhl)) {
 
@@ -76,6 +78,7 @@ void set_lights(){
   }  
 }
 
+//Function to set the latching valve to the correct position
 void set_latching_valve(int container){
 
   if (container == 1){
@@ -98,9 +101,9 @@ void set_latching_valve(int container){
   }
 }
 
+//Function to check sensors and determine the correct position for the latching valve
 void select_container(){
   int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
-  //int fillState[] = {HIGH, LOW, HIGH, HIGH};
 
   if (array_comp(fillState, llll)||array_comp(fillState, hlhl)) {
 
@@ -139,9 +142,9 @@ void select_container(){
   
 }
 
+//Function to check the spill sensor for loss of liquid containment
 void check_spill_sensor(){
   if(digitalRead(spillSensor) == HIGH){
-  //if(false){
     Serial.println("ERROR - LOSS OF CONTAINMENT");
     light_on(blueLED);
     digitalWrite(valve1, LOW);
@@ -151,9 +154,9 @@ void check_spill_sensor(){
   }
 }
 
+//Function to check if containers are properly in place
 void check_containers(){
   if(digitalRead(contOneSensor) == LOW || digitalRead(contTwoSensor) == LOW){
-  //if(false){
     Serial.println("ERROR - CHECK CONTAINERS");
     digitalWrite(valve1, LOW);
     digitalWrite(valve2, LOW);
@@ -163,38 +166,29 @@ void check_containers(){
   }
 }
 
+//Debugging function that returns the values of all sensor inputs
 void sensor_check(){
   Serial.println("contOne50 =");
   Serial.println(digitalRead(contOne50));
-  Serial.println(analogRead(contOne50));
   Serial.println("contOne100 =");
   Serial.println(digitalRead(contOne100));
-  Serial.println(analogRead(contOne100));
   Serial.println("contTwo50 =");
   Serial.println(digitalRead(contTwo50));
-  Serial.println(analogRead(contTwo50));
   Serial.println("contTwo100 =");
   Serial.println(digitalRead(contTwo100));
-  Serial.println(analogRead(contTwo100));
   Serial.println("contOneSensor =");
   Serial.println(digitalRead(contOneSensor));
-  Serial.println(analogRead(contOneSensor));
   Serial.println("contTwoSensor =");
   Serial.println(digitalRead(contTwoSensor));
-  Serial.println(analogRead(contTwoSensor));
   Serial.println("spillSensor =");
   Serial.println(digitalRead(spillSensor));
-  Serial.println(analogRead(spillSensor));
   Serial.println("lineSensor =");
   Serial.println(digitalRead(lineSensor));
-  Serial.println(analogRead(lineSensor));
-  // println("contOne50 =")
-  // println(contOne50);
 }
 
 void setup() {
 
-  // initializing the LEDs and valves as outputs
+  //Initializing the LEDs and valves as outputs
   
   pinMode(valve1, OUTPUT);
   pinMode(valve2, OUTPUT);
@@ -205,7 +199,7 @@ void setup() {
   pinMode(redLED, OUTPUT);
   pinMode(blueLED, OUTPUT);
   
-  // initialize the sensors and synthra signal as inputs
+  //Initialize the sensors and synthra signal as inputs
   pinMode(contOne50, INPUT);
   pinMode(contOne100, INPUT);
   pinMode(contTwo50, INPUT);
@@ -219,6 +213,7 @@ void setup() {
   Serial.begin(2400);
 
   delay(1000);
+
   sensor_check();
 
   check_spill_sensor();
@@ -230,6 +225,7 @@ void setup() {
   Serial.println("CONTAINERS IN PLACE");
 
   set_lights();
+
   select_container();
       
 }
@@ -240,11 +236,11 @@ void loop() {
   Serial.println("Waiting for initation...");
   while(digitalRead(synthraSignal) != HIGH){}
     
-  // Open both valves and wait 2 min for flow to start
+  // Open both valves and wait 1 min for flow to start
   Serial.println("Transfer initiated");
   digitalWrite(valve1, HIGH);
   digitalWrite(valve2, HIGH);
-  //delay(120000);
+  //delay(60000);
   delay(5000);
 
   while(digitalRead(lineSensor) != LOW){
