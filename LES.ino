@@ -1,11 +1,11 @@
 //Assigning pins to variables
-const int contOne50 = 22;
-const int contOne100 = 2;
-const int contTwo50 = 3;
-const int contTwo100 = 4;
-const int contOneSensor = 5;
-const int contTwoSensor = 6;
-const int spillSensor = 7;
+const int contOne50 = 2;
+const int contOne100 = 3;
+const int contTwo50 = 4;
+const int contTwo100 = 5;
+const int contOneSensor = 6;
+const int contTwoSensor = 7;
+const int spillSensor = 22;
 const int lineSensor = 8;
 const int synthraSignal = 9;
 const int valve1 = 52;
@@ -163,9 +163,39 @@ void check_containers(){
   }
 }
 
+void sensor_check(){
+  Serial.println("contOne50 =");
+  Serial.println(digitalRead(contOne50));
+  Serial.println(analogRead(contOne50));
+  Serial.println("contOne100 =");
+  Serial.println(digitalRead(contOne100));
+  Serial.println(analogRead(contOne100));
+  Serial.println("contTwo50 =");
+  Serial.println(digitalRead(contTwo50));
+  Serial.println(analogRead(contTwo50));
+  Serial.println("contTwo100 =");
+  Serial.println(digitalRead(contTwo100));
+  Serial.println(analogRead(contTwo100));
+  Serial.println("contOneSensor =");
+  Serial.println(digitalRead(contOneSensor));
+  Serial.println(analogRead(contOneSensor));
+  Serial.println("contTwoSensor =");
+  Serial.println(digitalRead(contTwoSensor));
+  Serial.println(analogRead(contTwoSensor));
+  Serial.println("spillSensor =");
+  Serial.println(digitalRead(spillSensor));
+  Serial.println(analogRead(spillSensor));
+  Serial.println("lineSensor =");
+  Serial.println(digitalRead(lineSensor));
+  Serial.println(analogRead(lineSensor));
+  // println("contOne50 =")
+  // println(contOne50);
+}
+
 void setup() {
 
   // initializing the LEDs and valves as outputs
+  
   pinMode(valve1, OUTPUT);
   pinMode(valve2, OUTPUT);
   pinMode(latchingValvePower, OUTPUT);
@@ -187,6 +217,9 @@ void setup() {
   pinMode(synthraSignal, INPUT);
   
   Serial.begin(2400);
+
+  delay(1000);
+  sensor_check();
 
   check_spill_sensor();
 
