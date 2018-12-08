@@ -63,7 +63,7 @@ void light_on(int light){
 void set_lights(){
   int fillState[] = {digitalRead(contOne50), digitalRead(contOne100), digitalRead(contTwo50), digitalRead(contTwo100)};
 
-  if (array_comp(fillState, llll)||array_comp(fillState, hlhl)) {
+  if (array_comp(fillState, llll)||array_comp(fillState, hlhl)||array_comp(fillState, llhl)) {
 
     light_on(greenLED);
   
@@ -232,16 +232,38 @@ void setup() {
 
 void loop() {
 
+  digitalWrite(valve1, HIGH);
+  delay(5000);
+  digitalWrite(valve2, HIGH);
+  delay(5000);
+
   // Wait for start signal
   Serial.println("Waiting for initation...");
   while(digitalRead(synthraSignal) != HIGH){}
+
+
+  digitalWrite(latchingValvePower, HIGH);
+  Serial.println("1");
+  delay(5000);
+  digitalWrite(latchingValveSelect, HIGH);
+  Serial.println("2");
+  delay(5000);
+  digitalWrite(latchingValvePower, LOW);
+  Serial.println("3");
+  delay(5000);
+  digitalWrite(latchingValveSelect, LOW);
+  Serial.println("4");
     
   // Open both valves and wait 1 min for flow to start
   Serial.println("Transfer initiated");
   digitalWrite(valve1, HIGH);
   digitalWrite(valve2, HIGH);
+  check_spill_sensor();
+  check_containers();
   //delay(60000);
   delay(5000);
+
+
 
   while(digitalRead(lineSensor) != LOW){
     set_lights();
