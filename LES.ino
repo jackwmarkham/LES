@@ -1,21 +1,21 @@
 //Assigning pins to variables, pin 1 left blank to prevent issues with flashing software
-const int contOne50 = 2;
-const int contOne100 = 3;
-const int contTwo50 = 4;
-const int contTwo100 = 5;
-const int contOneSensor = 6;
-const int contTwoSensor = 7;
-const int spillSensor = 22;
-const int lineSensor = 8;
-const int synthraSignal = 9;
-const int valve1 = 52;
-const int valve2 = 50;
-const int latchingValvePower = 48;
-const int latchingValveSelect = 46;
-const int greenLED = 44;
-const int yellowLED = 42;
-const int redLED = 40;
-const int blueLED = 38;
+const int contOne50 = 25;
+const int contOne100 = 26;
+const int contTwo50 = 27;
+const int contTwo100 = 28;
+const int contOneSensor = 16;
+const int contTwoSensor = 17;
+const int spillSensor = 23;
+const int lineSensor = 24;
+const int synthraSignal = 30;
+const int valve1 = 15;
+const int valve2 = 14;
+const int latchingValvePower = 13;
+const int latchingValveSelect = 12;
+const int greenLED = 11;
+const int yellowLED = 10;
+const int redLED = 9;
+const int blueLED = 2;
 
 //All possible fill states, follow the format {contOne50, contOne100, contTwo50, contTwo100}
 const int llll[] = {LOW, LOW, LOW, LOW};
